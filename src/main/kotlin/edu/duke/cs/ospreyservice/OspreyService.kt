@@ -1,7 +1,11 @@
 package edu.duke.cs.ospreyservice
 
+import edu.duke.cs.ospreyservice.services.AboutService
+import io.ktor.application.call
 import io.ktor.application.install
 import io.ktor.features.ContentNegotiation
+import io.ktor.http.ContentType
+import io.ktor.response.respondText
 import io.ktor.routing.get
 import io.ktor.routing.routing
 import io.ktor.serialization.serialization
@@ -44,9 +48,18 @@ object OspreyService {
 				serialization()
 			}
 
-			// TODO: more routes
 			routing {
-				get("/", HelloService.route)
+
+				// serve a simple webpage at the root
+				get("/") {
+					val html = getResourceAsString("index.html")
+						.replace("\$name", name)
+						.replace("\$version", version)
+					call.respondText(html, ContentType.Text.Html)
+				}
+
+				// map each service to a URL
+				get("/about", AboutService.route)
 			}
 		}
 
