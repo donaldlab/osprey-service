@@ -14,6 +14,7 @@ import io.ktor.request.receive
 import io.ktor.response.respond
 import io.ktor.routing.Routing
 import io.ktor.routing.get
+import io.ktor.routing.post
 import io.ktor.serialization.SerializationConverter
 import io.ktor.util.KtorExperimentalAPI
 import io.ktor.util.pipeline.PipelineContext
@@ -89,7 +90,7 @@ inline fun <reified R:ResponseInfo> Routing.service(path: String, crossinline fu
 }
 
 inline fun <reified T:Any, reified R:ResponseInfo> Routing.service(path: String, crossinline func: (T) -> ServiceResponse<R>) {
-	get(path) {
+	post(path) {
 		try {
 			call.respond(func(call.receive()))
 		} catch (t: Throwable) {

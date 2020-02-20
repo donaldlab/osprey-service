@@ -6,12 +6,12 @@ import kotlinx.serialization.Serializable
 
 object AboutService {
 
-	fun run(): ServiceResponse<AboutResponse> =
-		ServiceResponse.Success(AboutResponse(OspreyService.name, OspreyService.version))
-
 	fun registerResponses(registrar: ResponseRegistrar) {
 		registrar.addResponse<AboutResponse>()
 	}
+
+	fun run(): ServiceResponse<AboutResponse> =
+		ServiceResponse.Success(AboutResponse(OspreyService.name, OspreyService.version))
 }
 
 @Serializable

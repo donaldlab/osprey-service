@@ -1,6 +1,7 @@
 package edu.duke.cs.ospreyservice
 
 import edu.duke.cs.ospreyservice.services.AboutService
+import edu.duke.cs.ospreyservice.services.MissingAtomsService
 import io.ktor.application.call
 import io.ktor.application.install
 import io.ktor.features.ContentNegotiation
@@ -18,6 +19,7 @@ import kotlinx.serialization.modules.SerializersModule
 import kotlinx.serialization.serializer
 import org.slf4j.LoggerFactory
 import java.nio.charset.Charset
+import java.nio.file.Path
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.NoSuchElementException
@@ -49,6 +51,9 @@ object OspreyService {
 
 	val log = LoggerFactory.getLogger(OspreyService::class.java)
 
+	val dir: Path get() = _dir ?: throw IllegalStateException("service not started yet")
+	private var _dir: Path? = null
+
 	private val service =
 		embeddedServer(Netty, 8080) {
 
@@ -68,6 +73,7 @@ object OspreyService {
 
 				// map each service to a URL
 				service("/about", AboutService::run)
+				service("/missingAtoms", MissingAtomsService::run)
 			}
 		}
 
@@ -83,6 +89,7 @@ object OspreyService {
 
 		// ask each service to register their responses and errors
 		AboutService.registerResponses(registrar)
+		MissingAtomsService.registerResponses(registrar)
 
 		polymorphic<ResponseInfo> {
 			for (response in registrar.responses) {
@@ -111,15 +118,19 @@ object OspreyService {
 		context = serializationModule
 	)
 
-	fun start(wait: Boolean) =
+	fun start(dir: Path, wait: Boolean) {
+		_dir = dir
 		service.start(wait)
+	}
 
-	fun stop() =
+	fun stop() {
 		service.stop(2L, 2L, TimeUnit.SECONDS)
+		_dir = null
+	}
 
-	fun <T> use(block: () -> T): T {
+	fun <T> use(dir: Path, block: () -> T): T {
 		try {
-			start(wait = false)
+			start(dir, wait = false)
 			return block()
 		} finally {
 			stop()
