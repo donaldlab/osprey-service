@@ -18,6 +18,7 @@ repositories {
 dependencies {
 	
 	implementation(kotlin("stdlib-jdk8"))
+	implementation("ch.qos.logback:logback-classic:1.2.3")
 
 	val ktorVersion = "1.3.0"
 	api("io.ktor:ktor-server-netty:$ktorVersion")
