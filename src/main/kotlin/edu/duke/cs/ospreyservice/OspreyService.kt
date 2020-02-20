@@ -6,8 +6,12 @@ import io.ktor.application.call
 import io.ktor.application.install
 import io.ktor.features.ContentNegotiation
 import io.ktor.http.ContentType
+import io.ktor.request.receive
+import io.ktor.response.respond
 import io.ktor.response.respondText
+import io.ktor.routing.Routing
 import io.ktor.routing.get
+import io.ktor.routing.post
 import io.ktor.routing.routing
 import io.ktor.server.engine.embeddedServer
 import io.ktor.server.engine.stop
@@ -51,11 +55,10 @@ object OspreyService {
 
 	val log = LoggerFactory.getLogger(OspreyService::class.java)
 
-	val dir: Path get() = _dir ?: throw IllegalStateException("service not started yet")
-	private var _dir: Path? = null
 
-	private val service =
-		embeddedServer(Netty, 8080) {
+	class Instance(val dir: Path, wait: Boolean) : AutoCloseable {
+
+		private val service = embeddedServer(Netty, 8080) {
 
 			install(ContentNegotiation) {
 				serializationForServiceResponse()
@@ -76,6 +79,35 @@ object OspreyService {
 				service("/missingAtoms", MissingAtomsService::run)
 			}
 		}
+
+		init {
+			service.start(wait)
+		}
+
+		override fun close() {
+			service.stop(0L, 5L, TimeUnit.SECONDS)
+		}
+
+		private inline fun <reified R:ResponseInfo> Routing.service(path: String, crossinline func: (Instance) -> ServiceResponse<R>) {
+			get(path) {
+				try {
+					call.respond(func(this@Instance))
+				} catch (t: Throwable) {
+					call.respondError(t)
+				}
+			}
+		}
+
+		private inline fun <reified T:Any, reified R:ResponseInfo> Routing.service(path: String, crossinline func: (Instance, T) -> ServiceResponse<R>) {
+			post(path) {
+				try {
+					call.respond(func(this@Instance, call.receive()))
+				} catch (t: Throwable) {
+					call.respondError(t)
+				}
+			}
+		}
+	}
 
 	// register types for each service
 	@UseExperimental(ImplicitReflectionSerializer::class)
@@ -117,23 +149,4 @@ object OspreyService {
 		),
 		context = serializationModule
 	)
-
-	fun start(dir: Path, wait: Boolean) {
-		_dir = dir
-		service.start(wait)
-	}
-
-	fun stop() {
-		service.stop(2L, 2L, TimeUnit.SECONDS)
-		_dir = null
-	}
-
-	fun <T> use(dir: Path, block: () -> T): T {
-		try {
-			start(dir, wait = false)
-			return block()
-		} finally {
-			stop()
-		}
-	}
 }

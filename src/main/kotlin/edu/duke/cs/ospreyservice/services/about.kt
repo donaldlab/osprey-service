@@ -10,7 +10,7 @@ object AboutService {
 		registrar.addResponse<AboutResponse>()
 	}
 
-	fun run(): ServiceResponse<AboutResponse> =
+	fun run(instance: OspreyService.Instance): ServiceResponse<AboutResponse> =
 		ServiceResponse.Success(AboutResponse(OspreyService.name, OspreyService.version))
 }
 

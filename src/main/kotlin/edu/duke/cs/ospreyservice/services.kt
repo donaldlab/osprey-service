@@ -10,11 +10,7 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.http.content.TextContent
 import io.ktor.http.withCharset
 import io.ktor.request.ApplicationReceiveRequest
-import io.ktor.request.receive
 import io.ktor.response.respond
-import io.ktor.routing.Routing
-import io.ktor.routing.get
-import io.ktor.routing.post
 import io.ktor.serialization.SerializationConverter
 import io.ktor.util.KtorExperimentalAPI
 import io.ktor.util.pipeline.PipelineContext
@@ -78,26 +74,6 @@ class ResponseRegistrar {
 	inline fun <reified E:ErrorInfo> addError() = addError(E::class)
 }
 
-
-inline fun <reified R:ResponseInfo> Routing.service(path: String, crossinline func: () -> ServiceResponse<R>) {
-	get(path) {
-		try {
-			call.respond(func())
-		} catch (t: Throwable) {
-			call.respondError(t)
-		}
-	}
-}
-
-inline fun <reified T:Any, reified R:ResponseInfo> Routing.service(path: String, crossinline func: (T) -> ServiceResponse<R>) {
-	post(path) {
-		try {
-			call.respond(func(call.receive()))
-		} catch (t: Throwable) {
-			call.respondError(t)
-		}
-	}
-}
 
 suspend fun ApplicationCall.respond(response: ServiceResponse<*>) {
 

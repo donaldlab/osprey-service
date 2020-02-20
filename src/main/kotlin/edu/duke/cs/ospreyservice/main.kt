@@ -4,6 +4,10 @@ import java.nio.file.Paths
 
 
 fun main() {
+
 	val cwd = Paths.get(System.getProperty("user.dir"))
-	OspreyService.start(cwd, wait = true)
+
+	// start the server
+	println("Starting ${OspreyService.name} v ${OspreyService.version} ...")
+	OspreyService.Instance(cwd, wait = true)
 }

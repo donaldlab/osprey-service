@@ -12,11 +12,11 @@ object MissingAtomsService {
 		registrar.addError<MissingAtomsError>()
 	}
 
-	fun run(request: MissingAtomsRequest): ServiceResponse<MissingAtomsResponse> {
+	fun run(instance: OspreyService.Instance, request: MissingAtomsRequest): ServiceResponse<MissingAtomsResponse> {
 
 		// run LEaP to infer all the missing atoms
 		val results = Leap.run(
-			OspreyService.dir,
+			instance.dir,
 			filesToWrite = mapOf("in.pdb" to request.pdb),
 			commands = """
 				|verbosity 2
