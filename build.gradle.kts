@@ -33,7 +33,11 @@ configure<JavaPluginConvention> {
 tasks.withType<KotlinCompile> {
 
 	kotlinOptions {
+
 		jvmTarget = "1.8"
+
+		// enable experimental features so we can use the fancy ktor stuff
+		freeCompilerArgs += "-Xuse-experimental=kotlin.Experimental"
 	}
 }
 
