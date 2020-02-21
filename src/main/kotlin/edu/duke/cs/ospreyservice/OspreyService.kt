@@ -1,6 +1,7 @@
 package edu.duke.cs.ospreyservice
 
 import edu.duke.cs.ospreyservice.services.AboutService
+import edu.duke.cs.ospreyservice.services.BondsService
 import edu.duke.cs.ospreyservice.services.MissingAtomsService
 import io.ktor.application.call
 import io.ktor.application.install
@@ -77,6 +78,7 @@ object OspreyService {
 				// map each service to a URL
 				service("/about", AboutService::run)
 				service("/missingAtoms", MissingAtomsService::run)
+				service("/bonds", BondsService::run)
 			}
 		}
 
@@ -122,6 +124,7 @@ object OspreyService {
 		// ask each service to register their responses and errors
 		AboutService.registerResponses(registrar)
 		MissingAtomsService.registerResponses(registrar)
+		BondsService.registerResponses(registrar)
 
 		polymorphic<ResponseInfo> {
 			for (response in registrar.responses) {
