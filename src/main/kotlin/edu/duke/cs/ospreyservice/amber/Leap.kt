@@ -7,7 +7,7 @@ import java.nio.file.Path
 
 object Leap {
 
-	fun sanitizeForcefieldName(ffname: String) =
+	fun sanitizeToken(ffname: String) =
 		ffname.replace(Regex("[^\\w]"), "")
 
 	data class Results(

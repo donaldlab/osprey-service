@@ -16,9 +16,6 @@ object BondsService {
 
 	fun run(instance: OspreyService.Instance, request: BondsRequest): ServiceResponse<BondsResponse> {
 
-		// TEMP
-		println("bonds service: ${request.ffname}")
-
 		// if we got a forcefield name, use LEaP
 		val ffname = request.ffname
 		if (ffname != null) {
@@ -29,7 +26,7 @@ object BondsService {
 				filesToWrite = mapOf("in.pdb" to request.pdb),
 				commands = """
 					|verbosity 2
-					|source leaprc.${Leap.sanitizeForcefieldName(ffname)}
+					|source leaprc.${Leap.sanitizeToken(ffname)}
 					|mol = loadPDB in.pdb
 					|saveMol2 mol out.mol2 0
 				""".trimMargin(),

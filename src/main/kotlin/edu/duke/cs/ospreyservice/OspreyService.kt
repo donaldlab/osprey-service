@@ -1,8 +1,6 @@
 package edu.duke.cs.ospreyservice
 
-import edu.duke.cs.ospreyservice.services.AboutService
-import edu.duke.cs.ospreyservice.services.BondsService
-import edu.duke.cs.ospreyservice.services.MissingAtomsService
+import edu.duke.cs.ospreyservice.services.*
 import io.ktor.application.call
 import io.ktor.application.install
 import io.ktor.features.ContentNegotiation
@@ -79,6 +77,8 @@ object OspreyService {
 				service("/about", AboutService::run)
 				service("/missingAtoms", MissingAtomsService::run)
 				service("/bonds", BondsService::run)
+				service("/protonation", ProtonationService::run)
+				service("/protonate", ProtonateService::run)
 			}
 		}
 
@@ -125,6 +125,8 @@ object OspreyService {
 		AboutService.registerResponses(registrar)
 		MissingAtomsService.registerResponses(registrar)
 		BondsService.registerResponses(registrar)
+		ProtonationService.registerResponses(registrar)
+		ProtonateService.registerResponses(registrar)
 
 		polymorphic<ResponseInfo> {
 			for (response in registrar.responses) {

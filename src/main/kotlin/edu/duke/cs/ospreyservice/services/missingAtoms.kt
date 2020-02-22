@@ -20,7 +20,7 @@ object MissingAtomsService {
 			filesToWrite = mapOf("in.pdb" to request.pdb),
 			commands = """
 				|verbosity 2
-				|source leaprc.${Leap.sanitizeForcefieldName(request.ffname)}
+				|source leaprc.${Leap.sanitizeToken(request.ffname)}
 				|mol = loadPDB in.pdb
 				|saveMol2 mol out.mol2 0
 			""".trimMargin(),
