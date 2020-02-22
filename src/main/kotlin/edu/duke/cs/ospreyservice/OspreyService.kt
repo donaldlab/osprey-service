@@ -79,6 +79,7 @@ object OspreyService {
 				service("/bonds", BondsService::run)
 				service("/protonation", ProtonationService::run)
 				service("/protonate", ProtonateService::run)
+				service("/types", TypesService::run)
 			}
 		}
 
@@ -127,6 +128,7 @@ object OspreyService {
 		BondsService.registerResponses(registrar)
 		ProtonationService.registerResponses(registrar)
 		ProtonateService.registerResponses(registrar)
+		TypesService.registerResponses(registrar)
 
 		polymorphic<ResponseInfo> {
 			for (response in registrar.responses) {

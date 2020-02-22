@@ -17,9 +17,9 @@ object ProtonationService {
 	fun run(instance: OspreyService.Instance, request: ProtonationRequest): ServiceResponse<ProtonationResponse> {
 
 		// get the atom types, if any
-		val atomTypes = request.atomTypes?.let { atomTypesName ->
-			Antechamber.AtomTypes.values().find { it.name == atomTypesName }
-				?: return ServiceResponse.Failure(RequestError("unrecognized atom types: $atomTypesName"))
+		val atomTypes = request.atomTypes?.let { id ->
+			Antechamber.AtomTypes.values().find { it.id == id }
+				?: return ServiceResponse.Failure(RequestError("unrecognized atom types: $id"))
 		}
 
 		if (atomTypes == null) {
