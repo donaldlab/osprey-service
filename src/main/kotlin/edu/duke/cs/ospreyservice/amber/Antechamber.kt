@@ -55,7 +55,7 @@ object Antechamber {
 		sqmOptions: SQM.Options = SQM.Options()
 	): Results {
 
-		val homePath = Paths.get("ambertools").toAbsolutePath()
+		val homePath = serviceDir.resolve("progs/ambertools").toAbsolutePath()
 		val antechamberPath = homePath.resolve("bin/antechamber").toAbsolutePath()
 
 		tempFolder("antechamber") { cwd ->
