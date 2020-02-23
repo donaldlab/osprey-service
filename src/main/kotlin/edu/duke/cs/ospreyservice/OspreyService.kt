@@ -83,6 +83,7 @@ object OspreyService {
 				service("/moleculeFFInfo", MoleculeFFInfoService::run)
 				service("/forcefieldParams", ForcefieldParamsService::run)
 				service("/minimize", MinimizeService::run)
+				service("/clashes", ClashesService::run)
 			}
 		}
 
@@ -135,6 +136,7 @@ object OspreyService {
 		MoleculeFFInfoService.registerResponses(registrar)
 		ForcefieldParamsService.registerResponses(registrar)
 		MinimizeService.registerResponses(registrar)
+		ClashesService.registerResponses(registrar)
 
 		polymorphic<ResponseInfo> {
 			for (response in registrar.responses) {

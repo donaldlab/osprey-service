@@ -16,7 +16,7 @@ object Sander {
 	data class Results(
 		val exitCode: Int,
 		val console: List<String>,
-		val coords: List<List<Double>>?
+		val coords: List<Point3d>?
 	)
 
 	fun run(
@@ -85,7 +85,7 @@ object Sander {
 				.takeIf { it.exists }
 				?.read()
 				?.let { text ->
-					ArrayList<List<Double>>().apply {
+					ArrayList<Point3d>().apply {
 						var lines = text.lines()
 
 						// skip the first two lines
@@ -106,14 +106,14 @@ object Sander {
 								.filter { it.isNotBlank() }
 
 							if (parts.size >= 3) {
-								add(listOf(
+								add(Point3d(
 									parts[0].toDoubleOrThrow(),
 									parts[1].toDoubleOrThrow(),
 									parts[2].toDoubleOrThrow()
 								))
 							}
 							if (parts.size >= 6) {
-								add(listOf(
+								add(Point3d(
 									parts[3].toDoubleOrThrow(),
 									parts[4].toDoubleOrThrow(),
 									parts[5].toDoubleOrThrow()

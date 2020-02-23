@@ -84,7 +84,7 @@ data class MinimizeRequest(
 
 @Serializable
 data class MinimizeResponse(
-	val coords: List<List<Double>>
+	val coords: List<Point3d>
 ) : ResponseInfo
 
 @Serializable
