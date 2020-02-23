@@ -8,7 +8,7 @@ import java.nio.file.Path
 object Leap {
 
 	fun sanitizeToken(ffname: String) =
-		ffname.replace(Regex("[^\\w]"), "")
+		ffname.replace(Regex("[^\\w.]"), "")
 
 	data class Results(
 		val exitCode: Int,
