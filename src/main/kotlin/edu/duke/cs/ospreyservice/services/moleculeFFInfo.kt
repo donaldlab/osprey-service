@@ -49,4 +49,6 @@ data class MoleculeFFInfoResponse(
 data class MoleculeFFInfoError(
 	override val msg: String,
 	val parmchkLog: String
-) : ErrorInfo
+) : ErrorInfo {
+	override fun message() = "$msg\n\nParmchk:\n$parmchkLog"
+}

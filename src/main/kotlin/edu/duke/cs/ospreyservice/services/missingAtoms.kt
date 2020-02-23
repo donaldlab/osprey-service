@@ -52,4 +52,6 @@ data class MissingAtomsResponse(
 data class MissingAtomsError(
 	override val msg: String,
 	val leapLog: String
-) : ErrorInfo
+) : ErrorInfo {
+	override fun message() = "$msg\n\nLEaP:\n$leapLog"
+}

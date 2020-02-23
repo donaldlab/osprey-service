@@ -107,4 +107,6 @@ data class ProtonateResponse(
 data class ProtonateError(
 	override val msg: String,
 	val leapLog: String
-) : ErrorInfo
+) : ErrorInfo {
+	override fun message() = "$msg\n\nLEaP:\n$leapLog"
+}

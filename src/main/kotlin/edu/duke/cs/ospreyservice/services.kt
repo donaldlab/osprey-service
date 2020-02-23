@@ -45,7 +45,10 @@ sealed class ServiceResponse<R:ResponseInfo> {
 interface ResponseInfo
 
 interface ErrorInfo {
+	/** a short message quickly describing the error */
 	val msg: String
+	/** show all of the error information as a string */
+	fun message(): String = msg
 }
 
 /** for when something unexpected happened in the service */
@@ -56,7 +59,7 @@ class InternalError(override val msg: String) : ErrorInfo
 @Serializable
 class RequestError(override val msg: String) : ErrorInfo
 
-class ServiceException(val error: ErrorInfo) : RuntimeException(error.msg)
+class ServiceException(val error: ErrorInfo) : RuntimeException(error.message())
 
 
 class ResponseRegistrar {

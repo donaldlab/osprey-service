@@ -78,10 +78,14 @@ data class BondsResponse(
 data class BondsLeapError(
 	override val msg: String,
 	val leapLog: String
-) : ErrorInfo
+) : ErrorInfo {
+	override fun message() = "$msg\n\nLEaP:\n$leapLog"
+}
 
 @Serializable
 data class BondsAntechamberError(
 	override val msg: String,
 	val antechamberLog: String
-) : ErrorInfo
+) : ErrorInfo {
+	override fun message() = "$msg\n\nAntechamber:\n$antechamberLog"
+}
