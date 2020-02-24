@@ -72,14 +72,25 @@ tasks {
 		enabled = false
 	}
 	distTar {
-		enabled = false
-	}
-
-	// turn off tar distributions
-	for (task in this) {
-		if (task.name.endsWith("DistTar")) {
-			task.enabled = false
-		}
+		compression = Compression.GZIP
 	}
 }
 
+distributions {
+
+	get("main").apply {
+
+		contents {
+
+			// add extra documentation
+			into("") { // project root
+				from("LICENSE.txt")
+			}
+
+			// add progs
+			into("progs") {
+				from("progs")
+			}
+		}
+	}
+}

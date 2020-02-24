@@ -55,9 +55,9 @@ object OspreyService {
 	val log = LoggerFactory.getLogger(OspreyService::class.java)
 
 
-	class Instance(val dir: Path, wait: Boolean) : AutoCloseable {
+	class Instance(val dir: Path, wait: Boolean, port: Int = 8080) : AutoCloseable {
 
-		private val service = embeddedServer(Netty, 8080) {
+		private val service = embeddedServer(Netty, port) {
 
 			install(ContentNegotiation) {
 				serializationForServiceResponse()
