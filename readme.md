@@ -64,3 +64,8 @@ Then configure the service to start a boot
 ```shell
 sudo systemctl enable osprey
 ```
+
+If you change the service file, get systemd to reload it:
+```shell
+sudo systemctl daemon-reload
+```
