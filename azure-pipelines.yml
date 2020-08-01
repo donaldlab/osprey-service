@@ -1,0 +1,36 @@
+trigger:
+- master
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+- group: maven-central-credentials
+
+steps:
+- task: DownloadSecureFile@1
+  name: signingKey
+  inputs:
+    secureFile: 'ci.key'
+- task: Bash@3
+  env:
+    ORG_GRADLE_PROJECT_signingPassword: $(azureDevopsSigningKeyPassword)
+  inputs:
+    targetType: 'inline'
+    script: |
+      export ORG_GRADLE_PROJECT_signingKey=$(< $(signingKey.secureFilePath) )
+
+      ./gradlew -PossrhUsername="$(ossrhUsername)" \
+                -PossrhPassword="$(ossrhPassword)" \
+                -PAZURE_BUILD_ID=$(Build.BuildId) \
+                publish
+- task: CopyFiles@2
+  inputs:
+    SourceFolder: 'build/libs'
+    Contents: '**'
+    TargetFolder: '$(Build.ArtifactStagingDirectory)'
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
