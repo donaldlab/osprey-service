@@ -10,7 +10,7 @@ plugins {
 }
 
 
-group = "io.github.donaldlab"
+group = "edu.duke.cs"
 version = "0.2"
 
 fun versionIdentifier(major: Int, minor: Int): String {
