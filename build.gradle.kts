@@ -5,14 +5,32 @@ plugins {
 	kotlin("jvm") version "1.3.60"
 	kotlin("plugin.serialization") version "1.3.61"
 	application
+	`maven-publish`
+	signing
 }
 
 
 group = "edu.duke.cs"
 version = "0.2"
 
+fun versionIdentifier(major: Int, minor: Int): String {
+	return when {
+		hasProperty("AZURE_BUILD_ID") && hasProperty("RELEASE") -> "$major.$minor." + property("AZURE_BUILD_ID")
+		hasProperty("AZURE_BUILD_ID") -> "$major.$minor." + property("AZURE_BUILD_ID") + "-SNAPSHOT"
+		hasProperty("RELEASE") -> "$major.$minor"
+		else -> "$major.$minor-SNAPSHOT"
+	}
+}
+
+version = versionIdentifier(0, 2)
+
 repositories {
 	jcenter()
+}
+
+java {
+	withSourcesJar()
+	withJavadocJar()
 }
 
 dependencies {
@@ -96,4 +114,64 @@ distributions {
 			}
 		}
 	}
+}
+
+publishing {
+	publications {
+		create<MavenPublication>("mavenJava") {
+			artifactId = "ospreyservice"
+			from(components["java"])
+
+			pom {
+				name.set("OSPREY Service")
+				description.set("Classes needed to access the Osprey webservice")
+				url.set("https://github.com/donaldlab/osprey-service")
+				licenses {
+					license {
+						name.set("GPL-2.0 License")
+						url.set("https://www.gnu.org/licenses/old-licenses/gpl-2.0.html")
+					}
+				}
+				developers {
+					developer {
+						id.set("jmartin")
+						name.set("Jeff Martin")
+						email.set("jmartin@cs.duke.edu")
+					}
+					developer {
+						id.set("nguerin")
+						name.set("Nate Guerin")
+						email.set("nguerin@cs.duke.edu")
+					}
+				}
+				scm {
+					connection.set("scm:git:git://github.com/donaldlab/osprey-service.git")
+					developerConnection.set("scm:git:ssh://github.com:donaldlab/osprey-service.git")
+					url.set("https://github.com/donaldlab/osprey-service/tree/master")
+				}
+			}
+		}
+	}
+
+	repositories {
+		maven {
+			// change URLs to point to your repos, e.g. http://my.org/repo
+			name = "OSSRH"
+			val releasesRepoUrl = uri("https://oss.sonatype.org/service/local/staging/deploy/maven2")
+			val snapshotsRepoUrl = uri( "https://oss.sonatype.org/content/repositories/snapshots")
+			url = if (version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl
+
+			credentials {
+				username = findProperty("ossrhUsername").toString()
+				password = findProperty("ossrhPassword").toString()
+			}
+		}
+	}
+}
+
+signing {
+	val signingKey: String? by project
+	val signingPassword: String? by project
+	useInMemoryPgpKeys(signingKey, signingPassword)
+	sign(publishing.publications["mavenJava"])
 }
