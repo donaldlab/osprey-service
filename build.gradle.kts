@@ -11,7 +11,7 @@ plugins {
 
 
 group = "edu.duke.cs"
-version = "0.2"
+version = "0.3"
 
 fun versionIdentifier(major: Int, minor: Int): String {
 	return when {

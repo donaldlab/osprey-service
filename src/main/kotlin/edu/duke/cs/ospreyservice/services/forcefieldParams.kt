@@ -19,7 +19,7 @@ object ForcefieldParamsService {
 		fun String.sanitize() = Leap.sanitizeToken(this)
 
 		val molname = "mol.%d.mol2"
-		val frcname = "mol.%d.frc"
+		val frcname = "mol.%d.%d.frc"
 		val topname = "mol.top"
 		val crdname = "mol.crd"
 
@@ -35,8 +35,8 @@ object ForcefieldParamsService {
 			}
 
 		for ((moli, mol) in request.molecules.withIndex()) {
-			if (mol.ffinfo != null) {
-				commands += "loadAmberParams ${frcname.format(moli)}"
+			for (ffinfoi in mol.ffinfos.indices) {
+				commands += "loadAmberParams ${frcname.format(moli, ffinfoi)}"
 			}
 			commands += "mol$moli = loadMol2 ${molname.format(moli)}"
 		}
@@ -53,8 +53,8 @@ object ForcefieldParamsService {
 			filesToWrite = HashMap<String,String>().apply {
 				for ((moli, mol) in request.molecules.withIndex()) {
 					put(molname.format(moli), mol.mol2)
-					if (mol.ffinfo != null) {
-						put(frcname.format(moli), mol.ffinfo)
+					for ((ffinfoi, ffinfo) in mol.ffinfos.withIndex()) {
+						put(frcname.format(moli, ffinfoi), ffinfo)
 					}
 				}
 			},
@@ -89,7 +89,7 @@ data class ForcefieldParamsRequest(
 	data class MolInfo(
 		val mol2: String,
 		val ffname: String,
-		val ffinfo: String?
+		val ffinfos: List<String>
 	)
 }
 
