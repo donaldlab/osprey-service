@@ -7,8 +7,9 @@ import java.nio.file.Path
 
 object Leap {
 
+	/** remove all characters that aren't in the allowed charaters list, to prevent any injection attacks on the LEAP scripts */
 	fun sanitizeToken(ffname: String) =
-		ffname.replace(Regex("[^\\w.]"), "")
+		ffname.replace(Regex("[^\\w.']"), "")
 
 	data class Results(
 		val exitCode: Int,

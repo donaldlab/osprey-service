@@ -68,6 +68,7 @@ object ProtonateService {
 		val protonatedMol2 = results.files["out.mol2"]
 			?: return ServiceResponse.Failure(ProtonateError(
 				"LEaP didn't produce an output molecule",
+				request.mol2,
 				results.console.joinToString("\n")
 			))
 
@@ -106,7 +107,8 @@ data class ProtonateResponse(
 @Serializable
 data class ProtonateError(
 	override val msg: String,
+	val mol2: String,
 	val leapLog: String
 ) : ErrorInfo {
-	override fun message() = "$msg\n\nLEaP:\n$leapLog"
+	override fun message() = "$msg\n\nMol2:\n$mol2\n\nLEaP:\n$leapLog"
 }
